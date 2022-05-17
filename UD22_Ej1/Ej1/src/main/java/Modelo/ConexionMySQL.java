@@ -20,10 +20,10 @@ public class ConexionMySQL {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection conexion = DriverManager.getConnection("jdbc:mysql://" + config.getDireccion() + ":3306", config.getUser(), config.getPass());
 			this.connectionObj = conexion;
-			System.out.println("Conectado a la base de datos con exito");
+			System.out.println("Conectado al servidor mysql con exito");
 			conexionEstablecida = true;
 		} catch (Exception e) {
-			System.out.println("Fallo conexion con la base de datos");
+			System.out.println("Fallo conexion servidor mysql");
 			System.out.println(e);
 			conexionEstablecida = false;
 		}
@@ -33,9 +33,9 @@ public class ConexionMySQL {
 	public void desconectar() {
 		try {
 			this.connectionObj.close();
-			System.out.println("Desconectado de la base de datos.");
+			System.out.println("Desconectado de servidor mysql.");
 		} catch (Exception e) {
-			System.out.println("Fallo al cerrar la conexion");
+			System.out.println("Fallo al cerrar la conexion con el servidor");
 			System.out.println(e);
 		}
 	}

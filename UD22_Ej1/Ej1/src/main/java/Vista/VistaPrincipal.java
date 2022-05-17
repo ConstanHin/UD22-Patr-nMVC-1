@@ -31,9 +31,7 @@ public class VistaPrincipal extends JFrame {
 	public JPanel contentPane;
 	public JButton actualizarBtn;
 	public JMenuItem nuevoClienteMenu;
-	public JMenuItem nuevoVideoMenu;
 	public JMenuItem buscarClienteMenu;
-	public JMenuItem buscarVideoMenu;
 	
 	private Controlador controlador;
 	private JTextArea textArea;
@@ -60,8 +58,6 @@ public class VistaPrincipal extends JFrame {
 		nuevoClienteMenu.setHorizontalAlignment(SwingConstants.LEFT);
 		pestanaNuevo.add(nuevoClienteMenu);
 		
-		nuevoVideoMenu = new JMenuItem("Videos");
-		pestanaNuevo.add(nuevoVideoMenu);
 		
 		JMenu pestanaBuscar = new JMenu("Buscar");
 		menuBar.add(pestanaBuscar);
@@ -70,8 +66,6 @@ public class VistaPrincipal extends JFrame {
 		buscarClienteMenu.setHorizontalAlignment(SwingConstants.LEFT);
 		pestanaBuscar.add(buscarClienteMenu);
 		
-		buscarVideoMenu = new JMenuItem("Videos");
-		pestanaBuscar.add(buscarVideoMenu);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -84,7 +78,7 @@ public class VistaPrincipal extends JFrame {
 		contentPane.add(tituloLable);
 		
 		desplegable = new JComboBox<String>();
-		desplegable.setModel(new DefaultComboBoxModel<String>(new String[] {"Tabla Cliente", "Tabla Video"}));
+		desplegable.setModel(new DefaultComboBoxModel<String>(new String[] {"Tabla Cliente"}));
 		desplegable.setBounds(172, 92, 183, 31);
 		contentPane.add(desplegable);
 		

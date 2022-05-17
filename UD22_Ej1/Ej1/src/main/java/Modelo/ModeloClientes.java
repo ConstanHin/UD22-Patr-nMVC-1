@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class ModeloClientes {
 
 	private ConexionMySQL mysql;
+	private String nombreDB = "clientesDB_team6";
 
 	public ModeloClientes(ConexionMySQL mysql) {
 		this.mysql = mysql;
@@ -19,7 +20,7 @@ public class ModeloClientes {
 			String sqlQuery = "INSERT INTO clientes (Nombre, Apellido, Direccion, DNI, Fecha) VALUE (\""
 					+ cliente.getNombre() + "\",\"" + cliente.getApellido() + "\",\"" + cliente.getDireccion() + "\",\""
 					+ cliente.getDNI() + "\",\"" + cliente.getFecha() + "\");";
-			mysql.insertQuery("VideoClub", sqlQuery);
+			mysql.insertQuery(nombreDB, sqlQuery);
 		} catch (Exception e) {
 			System.out.println("Fallo insercion modelo cliente");
 		}
@@ -30,7 +31,7 @@ public class ModeloClientes {
 		try {
 			String sqlQuery = "UPDATE clientes SET Nombre='"+cliente.getNombre()+"', Apellido='"+cliente.getApellido()+"' , Direccion='"+cliente.getDireccion()+"', DNI='"+ cliente.getDNI()+"', Fecha='"+cliente.getFecha()+"' WHERE ID = "
 					+ cliente.getID() + ";";
-			mysql.insertQuery("VideoClub", sqlQuery);
+			mysql.insertQuery(nombreDB, sqlQuery);
 
 		} catch (Exception e) {
 			System.out.println("Fallo Update modelo cliente");
@@ -72,7 +73,7 @@ public class ModeloClientes {
 	
 		try {
 			String sqlQuery = "SELECT * FROM clientes;";
-			ResultSet rs = mysql.getAllRows("VideoClub", sqlQuery);
+			ResultSet rs = mysql.getAllRows(nombreDB, sqlQuery);
 	
 			ArrayList<Cliente> arrClientes = new ArrayList<Cliente>();
 	

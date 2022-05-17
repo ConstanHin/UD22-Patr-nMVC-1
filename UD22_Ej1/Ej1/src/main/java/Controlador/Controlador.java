@@ -17,14 +17,10 @@ import Modelo.Conexion;
 import Modelo.ConexionMySQL;
 import Modelo.ConfigConexion;
 import Modelo.ModeloClientes;
-import Modelo.ModeloVideos;
-import Modelo.Video;
 import Vista.VistaC_cli;
-import Vista.VistaC_vid;
 import Vista.VistaConexion;
 import Vista.VistaPrincipal;
 import Vista.VistaU;
-import Vista.VistaUVid;
 
 public class Controlador {
 
@@ -32,12 +28,9 @@ public class Controlador {
 	private VistaConexion vistaConexion;
 	private VistaPrincipal vistaPrincipal;
 	private VistaC_cli vistaC_cli;
-	private VistaC_vid vistaC_vid;
 	private VistaU vistaU;
-	private VistaUVid vistaUVid;
 	private ConexionMySQL conexionMySQL;
 	private ModeloClientes modeloClientes;
-	private ModeloVideos modeloVideos;
 	private ConfigConexion configConexion;
 
 	// Constructors
@@ -125,21 +118,7 @@ public class Controlador {
 
 					}
 					break;
-				case 1:
-					modeloVideos = new ModeloVideos(conexionMySQL);
-					ArrayList<Video> videos = modeloVideos.mostrarTodos();
-
-					vistaPrincipal.getTextArea().setText("");
-					for (int i = 0; i < videos.size(); i++) {
-						Video video = videos.get(i);
-						vistaPrincipal.getTextArea().append(video.getID() + ". " + video.getTitle() + ", "
-								+ video.getDirector() + ", " + video.getId_cli() + "\n");
-
-					}
-					break;
-
 				default:
-
 					break;
 				}
 
@@ -176,17 +155,14 @@ public class Controlador {
 					abrirVistaPrincipal();
 
 					// Crear base de datos si no existe
-					conexionMySQL.dropDB("VideoClub");
-					conexionMySQL.createDB("VideoClub");
+					conexionMySQL.dropDB("clientesDB_team6");
+					conexionMySQL.createDB("clientesDB_team6");
 					Conexion conexion = new Conexion(conexionMySQL);
 					conexion.crearTablaClientes();
-					conexion.crearTablaVideos();
 					conexion.insertarRegistrosClientes();
-					conexion.insertarRegistrosVideos();
 
 					// Instanciar Modelos
 					modeloClientes = new ModeloClientes(conexionMySQL);
-					modeloVideos = new ModeloVideos(conexionMySQL);
 
 				} else {
 					JOptionPane dialog = new JOptionPane();
@@ -204,9 +180,7 @@ public class Controlador {
 		vistaPrincipal.setVisible(true);
 		listenerActualziarBtn();
 		listenerNuevoClienteMenu();
-		listenerNuevoVideoMenu();
 		listenerBuscarClienteMenu();
-		listenerBuscarVideoMenu();
 	}
 
 	private void listenerNuevoClienteMenu() {
@@ -244,42 +218,6 @@ public class Controlador {
 
 	}
 
-	/**
-	 * Accion al pulsar el boton Menu->nuevo->video
-	 */
-	private void listenerNuevoVideoMenu() {
-		vistaPrincipal.nuevoVideoMenu.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				vistaC_vid = new VistaC_vid();
-				vistaC_vid.setVisible(true);
-				vistaC_vid.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-				vistaC_vid.btnEnviarDatos.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-
-						try {
-							Video video = new Video();
-							video.setTitle(vistaC_vid.txtField_Title.getText());
-							video.setDirector(vistaC_vid.txtField_Director.getText());
-							video.setId_cli(Integer.parseInt(vistaC_vid.txtField_ID_Cli.getText()));
-
-							modeloVideos.insertar(video);
-							JOptionPane dialog = new JOptionPane();
-							dialog.showMessageDialog(null, "Registro video insertado correctamente!");
-						} catch (Exception e2) {
-							JOptionPane dialog = new JOptionPane();
-							dialog.showMessageDialog(null, "Error al insertar registro video");
-						}
-					}
-				});
-			}
-		});
-
-	}
 
 	/**
 	 * Menu boton buscar cliente
@@ -338,6 +276,7 @@ public class Controlador {
 
 					}
 				});
+				// Acción boton eliminar cliente
 				vistaU.btnEliminar.addActionListener(new ActionListener() {
 
 					@Override
@@ -346,83 +285,6 @@ public class Controlador {
 							modeloClientes.delete(Long.parseLong(vistaU.textFieldId.getText()));
 							JOptionPane dialog = new JOptionPane();
 							dialog.showMessageDialog(null, "Se ha eliminado el registro!");
-						} catch (Exception e2) {
-							JOptionPane dialog = new JOptionPane();
-							dialog.showMessageDialog(null, "No se ha podido eliminar el registro.");
-						}
-
-					}
-				});
-			}
-		});
-
-	}
-
-	/**
-	 * Menu boton buscar video
-	 */
-	private void listenerBuscarVideoMenu() {
-
-		vistaPrincipal.buscarVideoMenu.addActionListener(new ActionListener() {
-
-			// Accion click boton menu -> buscar -> video
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				vistaUVid = new VistaUVid();
-				vistaUVid.setVisible(true);
-				vistaUVid.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-				// Buscar Video
-				vistaUVid.btnBuscar.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-
-						try {
-							Video video = modeloVideos.mostrarPorId(Long.parseLong(vistaUVid.textFieldId.getText()));
-
-							vistaUVid.textFieldTitle.setText(video.getTitle());
-							vistaUVid.textFieldDirector.setText(video.getDirector());
-							vistaUVid.textFieldIdCliente.setText(String.valueOf(video.getId_cli()));
-						} catch (Exception e2) {
-							JOptionPane dialog = new JOptionPane();
-							dialog.showMessageDialog(null, "No se ha encontrado el registro del video.");
-						}
-
-					}
-				});
-
-				// Actualizar Video
-				vistaUVid.btnEnviarDatos.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						try {
-							Video video = new Video();
-							video.setID(Long.parseLong(vistaUVid.textFieldId.getText()));
-							video.setTitle(vistaUVid.textFieldTitle.getText());
-							video.setDirector(vistaUVid.textFieldDirector.getText());
-							video.setId_cli(Integer.valueOf(vistaUVid.textFieldIdCliente.getText()));
-
-							modeloVideos.update(video);
-
-							JOptionPane dialog = new JOptionPane();
-							dialog.showMessageDialog(null, "Se ha actualizado el registro!");
-						} catch (Exception e2) {
-							JOptionPane dialog = new JOptionPane();
-							dialog.showMessageDialog(null, "No se ha podido actualizar el registro.");
-						}
-
-					}
-				});
-				// Delete Video
-				vistaUVid.btnEliminar.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						
-						try {
-							modeloVideos.delete(Long.parseLong(vistaUVid.textFieldId.getText()));
-							JOptionPane dialog = new JOptionPane();
-							dialog.showMessageDialog(null, "Se ha eliminado el registro.");
 						} catch (Exception e2) {
 							JOptionPane dialog = new JOptionPane();
 							dialog.showMessageDialog(null, "No se ha podido eliminar el registro.");
